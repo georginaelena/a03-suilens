@@ -196,7 +196,7 @@ spec:
     spec:
       containers:
         - name: catalog-service
-          image: suilens/catalog-service:latest
+          image: georginaelena/catalog-service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3001
@@ -233,7 +233,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: suilens/order-service:latest
+          image: georginaelena/order-service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3002
@@ -274,7 +274,7 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: suilens/notification-service:latest
+          image: georginaelena/notification-service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3003
@@ -314,7 +314,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: suilens/frontend:latest
+          image: georginaelena/frontend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5173
