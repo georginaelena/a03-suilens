@@ -115,7 +115,7 @@ kind load docker-image suilens/frontend:latest --name suilens-a03
 
 ### 5.4 Deploy manifest
 
-Ganti namespace `suilens-yournpm` di `k8s/suilens.yaml` menjadi `suilens-<NPM>`.
+Ganti namespace `suilens-2206810995` di `k8s/suilens.yaml` menjadi `suilens-<NPM>`.
 
 ```bash
 kubectl apply -f k8s/suilens.yaml

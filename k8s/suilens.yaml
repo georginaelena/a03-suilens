@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: suilens-yournpm
+  name: suilens-2206810995
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalog-db
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: catalog-db
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: catalog-db
@@ -53,7 +53,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: order-db
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -87,7 +87,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: order-db
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: order-db
@@ -99,7 +99,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notification-db
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -133,7 +133,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: notification-db
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: notification-db
@@ -145,7 +145,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -167,7 +167,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: rabbitmq
@@ -183,7 +183,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalog-service
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -208,7 +208,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: catalog-service
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: catalog-service
@@ -220,7 +220,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: order-service
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -249,7 +249,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: order-service
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: order-service
@@ -261,7 +261,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notification-service
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -288,7 +288,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: notification-service
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: notification-service
@@ -301,7 +301,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   replicas: 1
   selector:
@@ -330,7 +330,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend
-  namespace: suilens-yournpm
+  namespace: suilens-2206810995
 spec:
   selector:
     app: frontend
