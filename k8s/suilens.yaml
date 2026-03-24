@@ -319,12 +319,17 @@ spec:
           ports:
             - containerPort: 5173
           env:
+            # Default for assignment testing via host/UTM port-forward
             - name: VITE_CATALOG_API
-              value: http://localhost:3001
+              value: http://127.0.0.1:3001
             - name: VITE_ORDER_API
-              value: http://localhost:3002
+              value: http://127.0.0.1:3002
             - name: VITE_NOTIFICATION_WS
-              value: ws://localhost:3003/ws
+              value: ws://127.0.0.1:3003/ws
+            # If frontend is only consumed inside the cluster network, use:
+            # http://catalog-service:3001
+            # http://order-service:3002
+            # ws://notification-service:3003/ws
 ---
 apiVersion: v1
 kind: Service
