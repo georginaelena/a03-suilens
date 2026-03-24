@@ -245,3 +245,14 @@ Ini memverifikasi semua service berhasil di-deploy (control-plane + 2 node worke
 
 **Screenshot: kubectl get pods -n suilens-2206810995 -o wide**
 ![](https://i.imgur.com/HIqQ9PV.png)
+
+---
+
+## Catatan Penggunaan AI
+
+Dalam pengerjaan assignment ini, saya menggunakan **GitHub Copilot** dan **ChatGPT** sebagai alat bantu untuk:
+- Memvalidasi arahan dan pendekatan pengerjaan
+- Menjelaskan konsep dan memberikan referensi implementasi
+- Mengecek struktur kode dan konfigurasi
+
+Meskipun menggunakan bantuan AI, seluruh kode dan konfigurasi tetap saya kerjakan dan uji sendiri. Setiap output dari AI selalu saya tinjau ulang, test, dan sesuaikan dengan kebutuhan assignment. Jika ada hasil AI yang kurang sesuai atau belum tepat, saya mengoreksi dan memperbaikinya. Dengan demikian, code dan deployment manifest yang final adalah hasil validasi dan expert review pribadi saya.
