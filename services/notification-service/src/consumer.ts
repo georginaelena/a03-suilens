@@ -7,7 +7,20 @@ const RABBITMQ_URL =
 const EXCHANGE_NAME = "suilens.events";
 const QUEUE_NAME = "notification-service.order-events";
 
-export async function startConsumer() {
+export interface OrderPlacedEvent {
+  event: "order.placed";
+  timestamp: string;
+  data: {
+    orderId: string;
+    customerName: string;
+    customerEmail: string;
+    lensName: string;
+  };
+}
+
+export async function startConsumer(
+  onOrderPlaced?: (event: OrderPlacedEvent) => void,
+) {
   let retries = 0;
   const maxRetries = 10;
   const retryDelay = 2000;
@@ -42,6 +55,7 @@ export async function startConsumer() {
             });
 
             console.log(`Notification recorded for order ${orderId}`);
+            onOrderPlaced?.(event as OrderPlacedEvent);
           }
 
           channel.ack(msg);
