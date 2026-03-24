@@ -1,7 +1,12 @@
 <template>
   <v-container class="py-8" max-width="800">
     <v-card>
-      <v-card-title>Live Order Notifications</v-card-title>
+      <v-card-title class="d-flex align-center justify-space-between">
+        <span>Live Order Notifications</span>
+        <v-chip size="small" :color="isConnected ? 'success' : 'warning'">
+          {{ isConnected ? "Connected" : "Disconnected" }}
+        </v-chip>
+      </v-card-title>
       <v-divider></v-divider>
 
       <v-card-text class="py-6" style="min-height: 500px">
@@ -46,9 +51,57 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const notifications = ref([]);
+const isConnected = ref(false);
+
+const WS_URL = import.meta.env.VITE_NOTIFICATION_WS || "ws://localhost:3003/ws";
+
+let ws = null;
+let reconnectTimer = null;
+let isUnmounted = false;
+
+function connectWebSocket() {
+  ws = new WebSocket(WS_URL);
+
+  ws.onopen = () => {
+    isConnected.value = true;
+  };
+
+  ws.onclose = () => {
+    isConnected.value = false;
+    if (!isUnmounted) {
+      reconnectTimer = setTimeout(connectWebSocket, 1500);
+    }
+  };
+
+  ws.onerror = () => {
+    isConnected.value = false;
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const payload = JSON.parse(event.data);
+      if (payload?.event === "order.placed") {
+        notifications.value.unshift(payload);
+        notifications.value = notifications.value.slice(0, 20);
+      }
+    } catch (error) {
+      console.error("Invalid websocket payload", error);
+    }
+  };
+}
+
+onMounted(() => {
+  connectWebSocket();
+});
+
+onBeforeUnmount(() => {
+  isUnmounted = true;
+  if (reconnectTimer) clearTimeout(reconnectTimer);
+  ws?.close();
+});
 
 function formatTime(timestamp) {
   const date = new Date(timestamp);

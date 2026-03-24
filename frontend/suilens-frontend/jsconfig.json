@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "target": "es5",
+    "target": "esnext",
     "module": "esnext",
     "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
     "moduleResolution": "bundler",
     "paths": {
       "@/*": [
