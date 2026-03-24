@@ -1,19 +1,48 @@
-# A03 Suilens - API, WebSocket, and Kubernetes
+# A03 Suilens - API Documentation & Kubernetes Deployment
 
-Repository ini berisi aplikasi Suilens berbasis microservices:
+## Author
 
-- `catalog-service` (port `3001`)
-- `order-service` (port `3002`)
-- `notification-service` (port `3003`)
-- `frontend` (port `5173`)
+*Georgina Elena Shinta Dewi Achti*  
+NPM: 2206810995  
 
-## 1) Menjalankan Dengan Docker Compose
+**Deskripsi:**
+
+Repository ini berisi aplikasi Suilens berbasis microservices dengan implementasi OpenAPI documentation, WebSocket real-time notifications, dan Kubernetes deployment.
+
+**Stack Teknologi:**
+- Backend: Bun runtime, Elysia framework, TypeScript
+- Frontend: Vue 3, Vite, Vuetify
+- Database: PostgreSQL (3 instance)
+- Event Bus: RabbitMQ
+- Container: Docker, Kubernetes (kind)
+
+**Microservices:**
+- `catalog-service` (port `3001`) - Inventaris lensa
+- `order-service` (port `3002`) - Manajemen pesanan
+- `notification-service` (port `3003`) - Notifikasi real-time
+- `frontend` (port `5173`) - UI Vue.js
+
+---
+
+## Checklist Requirement
+
+- ✅ Dokumentasi OpenAPI diimplementasikan di semua endpoint
+- ✅ Notifikasi WebSocket real-time saat pemesanan dibuat
+- ✅ Local Kubernetes cluster (1 control-plane + 2 worker nodes)
+- ✅ Format namespace deployment: `suilens-2206810995`
+- ✅ Screenshot bukti disertakan di bawah
+
+---
+
+## STEP 1: Setup Pengembangan Lokal
+
+### 1.1 Jalankan dengan Docker Compose
 
 ```bash
 docker compose up --build -d
 ```
 
-## 2) Migrasi Database + Seed
+### 1.2 Migrasi Database & Seed
 
 ```bash
 (cd services/catalog-service && bun install --frozen-lockfile && bunx drizzle-kit push)
@@ -22,29 +51,40 @@ docker compose up --build -d
 (cd services/catalog-service && bun run src/db/seed.ts)
 ```
 
-## 3) OpenAPI Documentation
+---
 
-OpenAPI docs tersedia untuk setiap service:
+## STEP 2: Bukti Dokumentasi OpenAPI
 
+Semua service menampilkan dokumentasi OpenAPI/Swagger di endpoint `/docs`. Akses via:
 - Catalog Service: `http://localhost:3001/docs`
 - Order Service: `http://localhost:3002/docs`
 - Notification Service: `http://localhost:3003/docs`
 
-Endpoint utama yang terdokumentasi:
+**Endpoint yang Terdokumentasi:**
+- **Catalog Service**: `GET /api/lenses`, `GET /api/lenses/:id`, `GET /health`
+- **Order Service**: `POST /api/orders`, `GET /api/orders`, `GET /api/orders/:id`, `GET /health`
+- **Notification Service**: `GET /api/notifications`, `GET /health`, `WS /ws`
 
-- Catalog: `GET /api/lenses`, `GET /api/lenses/:id`, `GET /health`
-- Order: `POST /api/orders`, `GET /api/orders`, `GET /api/orders/:id`, `GET /health`
-- Notification: `GET /api/notifications`, `GET /health`, `WS /ws`
+### Link Bukti (URL/Path Screenshot)
 
-### Bukti yang harus disertakan di laporan
+**Dokumentasi OpenAPI Catalog Service:**
+![](https://i.imgur.com/VHObMXv.png)
 
-Ambil screenshot layar OpenAPI docs untuk masing-masing service.
+**Dokumentasi OpenAPI Order Service:**
+![](https://i.imgur.com/FjaLCBR.png)
 
-## 4) WebSocket Smoke Test
+**Dokumentasi OpenAPI Notification Service:**
+![](https://i.imgur.com/PAH5m61.png)
 
-1. Buka frontend di `http://localhost:5173`.
-2. Pastikan panel **Live Order Notifications** awalnya kosong.
-3. Jalankan smoke test di bawah (ganti nama dan email sesuai instruksi tugas):
+---
+
+## STEP 3: WebSocket Notifikasi Real-Time
+
+### 3.1 Smoke Test WebSocket
+
+1. Buka frontend di `http://localhost:5173`
+2. Verifikasi panel **Live Order Notifications** kosong di awal
+3. Jalankan command smoke test:
 
 ```bash
 curl http://localhost:3001/api/lenses | jq
@@ -53,131 +93,155 @@ LENS_ID=$(curl -s http://localhost:3001/api/lenses | jq -r '.[0].id')
 curl -X POST http://localhost:3002/api/orders \
   -H "Content-Type: application/json" \
   -d '{
-    "customerName": "<NAMA_KAMU>",
-    "customerEmail": "<NPM>@gmail.com",
+    "customerName": "Georgina Elena Shinta Dewi Achti",
+    "customerEmail": "2206810995@gmail.com",
     "lensId": '"'"'"$LENS_ID"'"'"',
     "startDate": "2026-03-24",
     "endDate": "2026-03-27"
   }' | jq
 ```
 
-Setelah `POST /api/orders` sukses, notifikasi baru akan langsung muncul di frontend lewat WebSocket (`ws://localhost:3003/ws`).
+Bukti Run Command:
+![](https://i.imgur.com/pZo6DfW.png)
 
-## 5) Deployment ke Kubernetes Lokal
+4. Observasi: Setelah POST berhasil, notifikasi muncul **langsung** di frontend via WebSocket (`ws://localhost:3003/ws`)
 
-Manifest Kubernetes tersedia di `k8s/suilens.yaml`.
+### 3.2 Screenshot Bukti WebSocket
 
-### 5.0 Khusus jika pakai UTM bekas tutorial
+**Frontend SEBELUM POST /api/orders (notifikasi kosong):**
+![](https://i.imgur.com/aANHxXV.png)
 
-Kamu bisa lanjut dari VM UTM yang lama, tidak perlu install ulang semua dari nol.
+**Frontend SESUDAH POST /api/orders (notifikasi muncul via WebSocket):**
+![](https://i.imgur.com/1TpeyRo.png)
 
-Yang penting di VM tersebut sudah ada:
+---
 
-- Docker aktif
-- `kubectl` aktif
-- `kind` aktif
+## STEP 4: Deployment Kubernetes
 
-Cek cepat:
+Deployment dilakukan menggunakan cluster Kubernetes lokal di UTM dengan:
+
+* 1 control-plane
+* 2 worker
+* Namespace: `suilens-2206810995`
+
+---
+
+### 4.1 Clone Repository
 
 ```bash
-docker --version
-kubectl version --client
-kind version
+git clone https://github.com/georginaelena/a03-suilens
+cd a03-suilens
 ```
 
-Kalau command di atas keluar versi, lanjut ke langkah berikut.
+---
 
-### 5.1 Buat cluster (contoh pakai kind: 1 control-plane + 2 worker)
+### 4.2 Verifikasi Cluster
 
 ```bash
-kind create cluster --name suilens-a03 --config k8s/kind-3nodes.yaml
-kubectl cluster-info --context kind-suilens-a03
 kubectl get nodes -o wide
+kubectl cluster-info
 ```
 
-### 5.2 Build image lokal
+Pastikan semua node `Ready`.
+
+---
+
+### 4.3 Buat Namespace
 
 ```bash
-docker build -t suilens/catalog-service:latest ./services/catalog-service
-docker build -t suilens/order-service:latest ./services/order-service
-docker build -t suilens/notification-service:latest ./services/notification-service
-docker build -t suilens/frontend:latest ./frontend/suilens-frontend
+kubectl create namespace suilens-2206810995
 ```
 
-### 5.3 Load image ke kind
+Cek:
 
 ```bash
-kind load docker-image suilens/catalog-service:latest --name suilens-a03
-kind load docker-image suilens/order-service:latest --name suilens-a03
-kind load docker-image suilens/notification-service:latest --name suilens-a03
-kind load docker-image suilens/frontend:latest --name suilens-a03
+kubectl get ns
 ```
 
-### 5.4 Deploy manifest
+Bukti:
 
-Ganti namespace `suilens-2206810995` di `k8s/suilens.yaml` menjadi `suilens-<NPM>`.
+![](https://i.imgur.com/IpYSJtG.png)
+
+---
+
+### 4.4 Deploy Aplikasi
 
 ```bash
-kubectl apply -f k8s/suilens.yaml
-kubectl get pods -n suilens-<NPM> -o wide
+kubectl apply -f suilens.yaml
 ```
 
-Jika pertama kali deploy, tunggu sampai semua pod status `Running` atau `Completed`:
+Bukti:
+
+![](https://i.imgur.com/tlA78Xd.png)
+
+---
+
+### 4.5 Cek Pod
 
 ```bash
-kubectl get pods -n suilens-<NPM> -w
+kubectl get pods -n suilens-2206810995 -o wide
 ```
 
-### 5.4.1 Migrasi database di dalam cluster
-
-Setelah pod service jalan, jalankan migrasi schema dan seed data dari pod masing-masing service:
+Tunggu sampai semua `Running`:
 
 ```bash
-kubectl exec -n suilens-<NPM> deploy/catalog-service -- bunx drizzle-kit push
-kubectl exec -n suilens-<NPM> deploy/order-service -- bunx drizzle-kit push
-kubectl exec -n suilens-<NPM> deploy/notification-service -- bunx drizzle-kit push
-kubectl exec -n suilens-<NPM> deploy/catalog-service -- bun run src/db/seed.ts
+kubectl get pods -n suilens-2206810995 -w
 ```
 
-### 5.5 Port-forward (opsional untuk testing dari host)
+---
+
+### 4.6 Cek Service
 
 ```bash
-kubectl port-forward -n suilens-<NPM> svc/catalog-service 3001:3001
-kubectl port-forward -n suilens-<NPM> svc/order-service 3002:3002
-kubectl port-forward -n suilens-<NPM> svc/notification-service 3003:3003
-kubectl port-forward -n suilens-<NPM> svc/frontend 5173:5173
+kubectl get svc -n suilens-2206810995
 ```
 
-Lalu akses:
+---
 
-- Frontend: `http://localhost:5173`
-- OpenAPI Catalog: `http://localhost:3001/docs`
-- OpenAPI Order: `http://localhost:3002/docs`
-- OpenAPI Notification: `http://localhost:3003/docs`
+### 4.7 Port Forward
 
-### 5.6 Troubleshooting cepat di UTM
-
-Kalau ada pod `CrashLoopBackOff` atau `Error`, cek ini:
+Buka beberapa terminal:
 
 ```bash
-kubectl get pods -n suilens-<NPM>
-kubectl describe pod -n suilens-<NPM> <POD_NAME>
-kubectl logs -n suilens-<NPM> <POD_NAME> --tail=100
+# Frontend
+kubectl port-forward svc/frontend 5173:5173 -n suilens-2206810995
+
+# Catalog
+kubectl port-forward svc/catalog-service 3001:3001 -n suilens-2206810995
+
+# Order
+kubectl port-forward svc/order-service 3002:3002 -n suilens-2206810995
+
+# Notification
+kubectl port-forward svc/notification-service 3003:3003 -n suilens-2206810995
 ```
 
-Kalau image tidak ketemu, biasanya lupa langkah `kind load docker-image ...`.
+---
 
-## 6) Evidence Checklist untuk Pengumpulan
+### 4.8 Akses Aplikasi
 
-- Screenshot OpenAPI docs `catalog-service`.
-- Screenshot OpenAPI docs `order-service`.
-- Screenshot OpenAPI docs `notification-service`.
-- Screenshot frontend sebelum `POST /api/orders`.
-- Screenshot frontend setelah `POST /api/orders` (notifikasi muncul).
-- Screenshot output `kubectl get pods -o wide` pada namespace `suilens-<NPM>`.
+* Frontend:
+  [http://localhost:5173](http://localhost:5173)
 
-## 7) Stop Environment
+* Swagger Docs:
+
+  * [http://localhost:3001/docs](http://localhost:3001/docs)
+  * [http://localhost:3002/docs](http://localhost:3002/docs)
+  * [http://localhost:3003/docs](http://localhost:3003/docs)
+
+---
+
+## STEP 5: Bukti Kubernetes
+
+### 5.1 Output Status Pod
+
+Jalankan dan screenshot output-nya:
 
 ```bash
-docker compose down
+kubectl get pods -n suilens-2206810995 -o wide
 ```
+
+Ini memverifikasi semua service berhasil di-deploy (control-plane + 2 node worker).
+
+**Screenshot: kubectl get pods -n suilens-2206810995 -o wide**
+![](https://i.imgur.com/HIqQ9PV.png)
